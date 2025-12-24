@@ -1,10 +1,12 @@
 package com.deyryl.task3
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -28,7 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
-class MainActivity : ComponentActivity() {
+class MainActivityAidl : ComponentActivity() {
     private var resultState = mutableStateOf("")
 
     private var bound = false
@@ -38,6 +40,7 @@ class MainActivity : ComponentActivity() {
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder) {
             squareService = IService.Stub.asInterface(service)
+            Log.d("service", "$squareService")
             bound = true
         }
 
@@ -53,14 +56,15 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MainScreen(resultState.value, Modifier.fillMaxSize()) { number ->
-                squareService?.square(number) ?: throw RuntimeException("No service")
+                Log.d("service", "$squareService")
+                resultState.value = (squareService?.square(number) ?: 0).toString()
             }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        Intent(this, SquareService::class.java).also { intent ->
+        Intent(this, SquareServiceAidl::class.java).also { intent ->
             bindService(intent, connection, BIND_AUTO_CREATE)
         }
     }

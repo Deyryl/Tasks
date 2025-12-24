@@ -33,7 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 
-class MainActivityAidl : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     private var resultState = mutableStateOf("")
 
     private var bound = false

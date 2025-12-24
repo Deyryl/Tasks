@@ -12,7 +12,6 @@ import android.os.RemoteException
 import androidx.core.os.bundleOf
 
 class SquareServiceAidl : Service() {
-
     val binder = object : IService.Stub() {
         override fun square(number: Int): Long {
             return number.toLong() * number

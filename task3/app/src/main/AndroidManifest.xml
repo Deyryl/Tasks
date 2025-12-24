@@ -19,12 +19,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".SquareService"
+        <service android:name=".SquareServiceAidl"
             android:exported="false"
             android:process=":other">
             <intent-filter>
                 <action android:name="aidl.REMOTE_CONNECTION"/>
             </intent-filter>
+        </service>
+        <service android:name=".SquareService"
+            android:exported="false"
+            android:process=":other">
         </service>
     </application>
 </manifest>
