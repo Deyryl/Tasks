@@ -13,8 +13,13 @@ import androidx.core.os.bundleOf
 
 class SquareServiceAidl : Service() {
     val binder = object : IService.Stub() {
-        override fun square(number: Int): Long {
-            return number.toLong() * number
+        override fun square(number: Int, cb: IServiceCallback?) {
+            if (cb == null) return
+
+            try {
+                val result = number.toLong() * number
+                cb.onResult(result)
+            } catch (_: RemoteException) {  }
         }
     }
 

@@ -9,7 +9,7 @@ import android.os.Messenger
 import android.os.RemoteException
 import androidx.core.os.bundleOf
 
-class SquareService : Service() {
+class SquareServiceMessenger : Service() {
 
     private val messenger = Messenger(IncomingHandler())
 

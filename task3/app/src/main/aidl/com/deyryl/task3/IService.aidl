@@ -1,10 +1,8 @@
 package com.deyryl.task3;
 
-interface IService {
-    long square(int number);
+import com.deyryl.task3.IServiceCallback;
 
-//    interface Callback {
-//        void action();
-//    }
+interface IService {
+    void square(int number, IServiceCallback cb);
 }
 

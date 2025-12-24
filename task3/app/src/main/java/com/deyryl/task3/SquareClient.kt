@@ -1,9 +1,11 @@
 package com.deyryl.task3
 
-interface SquareClient {
-    val isConnected: Boolean
+import android.content.Context
 
-    fun connect()
-    fun disconnect()
-    fun square(number: Int)
+interface SquareClient {
+    val isBound: Boolean
+
+    fun connect(context: Context)
+    fun disconnect(context: Context)
+    fun square(number: Int, onResult: (Long) -> Unit)
 }

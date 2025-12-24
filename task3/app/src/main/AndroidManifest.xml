@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -11,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Task3">
         <activity
-            android:name=".MainActivityAidl"
+            android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Task3">
             <intent-filter>
@@ -22,11 +23,8 @@
         <service android:name=".SquareServiceAidl"
             android:exported="false"
             android:process=":other">
-            <intent-filter>
-                <action android:name="aidl.REMOTE_CONNECTION"/>
-            </intent-filter>
         </service>
-        <service android:name=".SquareService"
+        <service android:name=".SquareServiceMessenger"
             android:exported="false"
             android:process=":other">
         </service>
