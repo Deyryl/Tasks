@@ -4,11 +4,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
-import android.os.Message
-import android.os.Messenger
-import android.os.RemoteException
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -31,40 +27,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
 
-class MainActivityAidl : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     private var resultState = mutableStateOf("")
 
     private var bound = false
 
-    private var serviceMessenger: Messenger? = null
-    private var clientMessenger: Messenger = Messenger(ClientHandler {
-        resultState.value = it.toString()
-    })
+    private var squareService: IService? = null
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder) {
-            serviceMessenger = Messenger(service)
+            squareService = IService.Stub.asInterface(service)
             bound = true
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            serviceMessenger = null
+            squareService = null
             bound = false
-        }
-    }
-
-    private class ClientHandler(private val onResult: (Long) -> Unit) : Handler() {
-        override fun handleMessage(msg: Message) {
-            when (msg.what) {
-                SquareService.MSG_RESULT -> {
-                    val result = msg.data.getLong(SquareService.KEY_RESULT)
-                    onResult(result)
-                } else -> {
-                    super.handleMessage(msg)
-                }
-            }
         }
     }
 
@@ -74,7 +53,7 @@ class MainActivityAidl : ComponentActivity() {
 
         setContent {
             MainScreen(resultState.value, Modifier.fillMaxSize()) { number ->
-                numberToSquare(number)
+                squareService?.square(number) ?: throw RuntimeException("No service")
             }
         }
     }
@@ -89,20 +68,6 @@ class MainActivityAidl : ComponentActivity() {
     override fun onStop() {
         super.onStop()
         if (bound) unbindService(connection)
-    }
-
-    private fun numberToSquare(number: Int) {
-        if (!bound) throw RuntimeException("No bounded service")
-
-        val msg: Message = Message.obtain(null, SquareService.MSG_SQUARE).apply {
-            data = bundleOf(SquareService.KEY_NUMBER to number)
-            replyTo = clientMessenger
-        }
-        try {
-            serviceMessenger?.send(msg)
-        } catch (_: RemoteException) {
-
-        }
     }
 }
 
